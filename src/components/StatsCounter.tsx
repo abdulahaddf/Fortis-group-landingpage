@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import { fadeUp } from "@/lib/animations";
 
 const stats = [
-  { target: 12781, suffix: "", label: "Employees across five companies" },
+  { target: 12781, suffix: " Employees", label: "across five companies" },
   { target: 60, suffix: " million", label: "Pieces of garments made per year" },
-  { target: 8, suffix: " brands", label: "We are proud partner of" },
+  { target: 15, suffix: " brands", label: "We are proud partner of" },
   { target: 203, suffix: " million US$", label: "Yearly revenue from renowned brands" },
 ];
 
@@ -32,13 +32,13 @@ const StatCard = ({ stat, inView, isLast }: { stat: typeof stats[0]; inView: boo
   const count = useCountUp(stat.target, inView);
   return (
     <div className={`text-center py-8 ${!isLast ? "md:border-r md:border-primary-foreground/10" : ""}`}>
-      <div className="leading-none">
+      <div className="leading-none flex flex-col">
         <span className="text-5xl md:text-7xl font-extrabold text-primary-foreground">
           {count.toLocaleString()}
         </span>
         <span className="text-fortis-blue text-2xl md:text-3xl font-bold">{stat.suffix}</span>
       </div>
-      <p className="text-fortis-muted text-sm mt-2 max-w-[120px] mx-auto text-center">
+      <p className="text-fortis-muted text-sm mt-2  mx-auto text-center">
         {stat.label}
       </p>
     </div>
@@ -60,7 +60,7 @@ const StatsCounter = () => {
 
   return (
     <section ref={ref} className="bg-fortis-dark py-20">
-      <div className="max-w-7xl mx-auto px-6 md:px-20">
+      <div className=" mx-auto px-6 md:px-20">
         <motion.div
           initial="hidden"
           whileInView="visible"
