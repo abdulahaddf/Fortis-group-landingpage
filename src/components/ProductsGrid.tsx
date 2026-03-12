@@ -22,7 +22,7 @@ const ProductsGrid = () => {
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: false, amount: 0.1 }}
+        viewport={{ once: false, amount: 0.01 }}
         variants={fadeUp}
         className="max-w-7xl mx-auto"
       >
