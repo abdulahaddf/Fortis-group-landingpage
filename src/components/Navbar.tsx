@@ -26,13 +26,13 @@ const Navbar = () => {
         }`}
         aria-label="Main navigation"
       >
-        <div className="flex items-center justify-between px-6 md:px-20 py-4">
+        <div className="flex items-center justify-between px-6 md:px-20 py-2">
           <img
             src={scrolled ? "/assets/logo_stick.png" : "/assets/logo.png"}
             alt="Fortis Group"
-            className="w-[120px] md:w-[160px] transition-all duration-300"
+            className="w-[60px] md:w-[80px] transition-all duration-300"
           />
-          <div className="hidden lg:flex items-center gap-6">
+          {/* <div className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => (
               <a
                 key={link}
@@ -45,9 +45,9 @@ const Navbar = () => {
                 <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-fortis-blue transition-all duration-300 group-hover:w-full" />
               </a>
             ))}
-          </div>
+          </div> */}
           <button
-            className="lg:hidden"
+            // className="lg:hidden"
             onClick={() => setMenuOpen(true)}
             aria-label="Open menu"
           >
