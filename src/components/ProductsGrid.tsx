@@ -36,13 +36,13 @@ const ProductsGrid = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
           variants={staggerContainer}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         >
           {products.map((product) => (
             <motion.div
               key={product.name}
               variants={scaleIn}
-              className="relative overflow-hidden rounded-lg h-64 cursor-pointer group"
+              className="relative overflow-hidden rounded-lg h-84 cursor-pointer group"
             >
               <img
                 src={product.image}
