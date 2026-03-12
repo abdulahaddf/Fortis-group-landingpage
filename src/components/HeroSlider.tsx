@@ -4,17 +4,17 @@ import { ChevronDown } from "lucide-react";
 
 const slides = [
   {
-    image: "/assets/home_slide_01.jpg",
+    image: "/assets/home_slide_02.jpg",
     label: "WELCOME TO",
     heading: "Fortis Group",
-    subheading: "Bangladesh & Germany jointly owned apparel exporter",
+    subheading: "A Group With True Forward Thinking Vision",
     cta: "Discover More",
   },
   {
-    image: "/assets/home_slide_02.jpg",
+    image: "/assets/home_slide_01.jpg",
     label: "SINCE 2009",
     heading: "Global Manufacturing Excellence",
-    subheading: "Exporting to Europe, North America, Australia & Africa",
+    subheading: "Bangladesh & Germany jointly owned apparel exporter",
     cta: "Our Products",
   },
   {
@@ -43,14 +43,14 @@ const HeroSlider = () => {
   const slide = slides[current];
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
-      <AnimatePresence mode="wait">
+    <section className="relative h-screen w-full overflow-hidden bg-fortis-dark">
+      <AnimatePresence>
         <motion.div
           key={current}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 1, ease: "easeInOut" }}
           className="absolute inset-0"
         >
           <img
