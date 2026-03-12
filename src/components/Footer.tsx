@@ -68,7 +68,7 @@ const Footer = () => {
 
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
         <span className="text-fortis-muted text-xs">©2026. Fortis Group. All Rights Reserved.</span>
-        <span className="text-fortis-muted text-xs">Redesigned with Lovable</span>
+        <span className="text-fortis-muted text-xs">Redesigned by <a href="https://abdulahaddf.vercel.app/" target="_blank" className="font-bold text-xl">AHAD</a> </span>
       </div>
     </footer>
   );

@@ -21,7 +21,7 @@ const slides = [
     image: "/assets/home_slide_03.jpg",
     label: "TRUSTED WORLDWIDE",
     heading: "Beyond Garments",
-    subheading: "Diversified into Real Estate, Hospitality, Infrastructure & Agriculture",
+    subheading: "Diversified into Real Estate, Hospitality & Infrastructure",
     cta: "Our Companies",
   },
 ];
