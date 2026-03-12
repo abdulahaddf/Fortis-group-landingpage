@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useSpring, useTransform } from "framer-motion";
 import { slideLeft, slideRight } from "@/lib/animations";
 
 const companies = [
@@ -77,11 +77,25 @@ const companies = [
   },
 ];
 
+// Sort companies by year (latest first)
+const sortedCompanies = [...companies].sort((a, b) => b.year - a.year);
+
+// Smooth spring config — low stiffness & matched damping for fluid scroll tracking
+const SMOOTH_SPRING = { stiffness: 45, damping: 16, restDelta: 0.001 };
+
 const CompaniesTimeline = () => {
   const [expanded, setExpanded] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start center", "end center"],
+  });
+
+  const scaleY = useSpring(scrollYProgress, SMOOTH_SPRING);
 
   return (
-    <section className="bg-fortis-light py-24 px-6 md:px-20">
+    <section className="bg-fortis-light py-24 px-6 md:px-20 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <span className="text-fortis-blue text-sm uppercase tracking-[0.25em] font-semibold">
           how we do things?
@@ -94,100 +108,174 @@ const CompaniesTimeline = () => {
           diversified conglomerate built on trust.
         </p>
 
-        <div className="relative">
-          {/* Spine */}
-          <div className="absolute left-6 md:left-1/2 md:-translate-x-1/2 w-[2px] bg-fortis-border h-full top-0" />
+        <div ref={containerRef} className="relative">
+          {/* Timeline Spine (Background) */}
+          <div className="absolute left-6 md:left-1/2 md:-translate-x-1/2 w-[3px] bg-fortis-border h-full top-0 rounded-full" />
 
-          <div className="space-y-12">
-            {companies.map((company, i) => {
-              const isLeft = i % 2 === 0;
-              const isExpanded = expanded === i;
+          {/* Animated Progress Line — broader & smooth spring */}
+          <motion.div
+            className="absolute left-6 md:left-1/2 md:-translate-x-1/2 w-[3px] bg-fortis-blue h-full top-0 origin-top rounded-full z-0"
+            style={{ scaleY }}
+          />
 
-              return (
-                <motion.div
-                  key={company.name}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.2 }}
-                  variants={isLeft ? slideLeft : slideRight}
-                  className={`relative flex items-start ${
-                    isLeft ? "md:flex-row" : "md:flex-row-reverse"
-                  } flex-row`}
-                >
-                  {/* Dot */}
-                  <div className="absolute left-6 md:left-1/2 -translate-x-1/2 z-10 flex flex-col items-center">
-                    <span className="text-fortis-blue font-bold text-sm mb-1">{company.year}</span>
-                    <div
-                      className={`w-5 h-5 rounded-full border-2 border-fortis-blue transition-all duration-300 ${
-                        isExpanded ? "bg-fortis-blue scale-125 shadow-lg shadow-fortis-blue/30" : "bg-background"
-                      }`}
-                    />
-                  </div>
-
-                  {/* Spacer for mobile */}
-                  <div className="w-16 md:hidden shrink-0" />
-
-                  {/* Card */}
-                  <div
-                    className={`md:w-[45%] w-full ${
-                      isLeft ? "md:pr-12" : "md:pl-12"
-                    } ${isLeft ? "md:ml-0 md:mr-auto" : "md:mr-0 md:ml-auto"}`}
-                  >
-                    <div
-                      onClick={() => setExpanded(isExpanded ? null : i)}
-                      className={`bg-background rounded-xl shadow-sm p-6 border cursor-pointer transition-all duration-300 ${
-                        isExpanded
-                          ? "border-fortis-blue shadow-lg shadow-fortis-blue/10"
-                          : "border-transparent hover:border-fortis-blue hover:shadow-lg hover:shadow-fortis-blue/10"
-                      }`}
-                    >
-                      <img
-                        src={company.image}
-                        alt={company.name}
-                        className="w-full h-40 object-cover rounded-lg mb-4"
-                        loading="lazy"
-                      />
-                      <span className="text-xs bg-fortis-blue/10 text-fortis-blue font-medium px-3 py-1 rounded-full inline-block mb-2">
-                        {company.tag}
-                      </span>
-                      <h3 className="text-xl font-bold text-fortis-dark mb-1">{company.name}</h3>
-                      <p className="text-fortis-muted text-xs mb-3">Founded {company.year}</p>
-                      <p className="text-fortis-muted text-sm leading-relaxed">{company.short}</p>
-
-                      <button className="text-fortis-blue text-xs font-semibold mt-3">
-                        {isExpanded ? "− Show Less" : "+ Show More"}
-                      </button>
-
-                      <AnimatePresence>
-                        {isExpanded && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="overflow-hidden"
-                          >
-                            <p className="text-foreground text-sm leading-relaxed mt-3 pt-3 border-t border-fortis-border">
-                              {company.full}
-                            </p>
-                            <a
-                              href="#"
-                              className="text-fortis-blue text-sm font-semibold hover:underline mt-4 inline-block"
-                            >
-                              Discover Now →
-                            </a>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
+          <div className="space-y-12 relative z-10">
+            {sortedCompanies.map((company, i) => (
+              <TimelineItem
+                key={`${company.name}-${i}`}
+                company={company}
+                index={i}
+                isExpanded={expanded === i}
+                onToggle={() => setExpanded(expanded === i ? null : i)}
+              />
+            ))}
           </div>
         </div>
       </div>
     </section>
+  );
+};
+
+const TimelineItem = ({
+  company,
+  index,
+  isExpanded,
+  onToggle,
+}: {
+  company: (typeof companies)[0];
+  index: number;
+  isExpanded: boolean;
+  onToggle: () => void;
+}) => {
+  const isLeft = index % 2 === 0;
+  const itemRef = useRef<HTMLDivElement>(null);
+
+  // Track scroll progress: ring starts filling when item enters viewport (85%),
+  // completes when the dot reaches near-center of screen (55%)
+  const { scrollYProgress } = useScroll({
+    target: itemRef,
+    offset: ["start 88%", "center 52%"],
+  });
+
+  // Smooth spring — matches main spine for cohesive feel
+  const rawPathLength = useSpring(scrollYProgress, SMOOTH_SPRING);
+
+  // Clamp to [0, 1] to avoid overshoot artifacts
+  const pathLength = useTransform(rawPathLength, (v) => Math.min(1, Math.max(0, v)));
+
+  // Dot fill opacity: fades in as ring nears completion
+  const dotOpacity = useTransform(pathLength, [0.7, 1], [0, 1]);
+
+  return (
+    <motion.div
+      ref={itemRef}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.2 }}
+      variants={isLeft ? slideLeft : slideRight}
+      className={`relative flex items-start ${
+        isLeft ? "md:flex-row" : "md:flex-row-reverse"
+      } flex-row`}
+    >
+      {/* Timeline Point Wrapper */}
+      <div className="absolute left-6 md:left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+        <span className="text-fortis-blue font-bold text-sm mb-2 bg-fortis-light px-2 rounded-md">
+          {company.year}
+        </span>
+
+        {/* Ring + Dot — 40×40 container so stroke doesn't clip */}
+        <div className="relative w-10 h-10 flex items-center justify-center">
+          {/* SVG ring: starts from top (-rotate-90), fills clockwise */}
+          <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 40 40">
+            {/* Static track ring */}
+            <circle
+              cx="20"
+              cy="20"
+              r="17"
+              fill="none"
+              stroke="hsl(var(--fortis-border))"
+              strokeWidth="2.5"
+            />
+            {/* Animated fill ring — pathLength drives the draw */}
+            <motion.circle
+              cx="20"
+              cy="20"
+              r="17"
+              fill="none"
+              stroke="hsl(var(--fortis-blue))"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              style={{ pathLength }}
+            />
+          </svg>
+
+          {/* Center dot — opaque solid fill, glows when ring completes */}
+          <div className="relative z-10 w-4 h-4 rounded-full border-2 border-fortis-blue bg-white transition-all duration-300">
+            <motion.div
+              className="absolute inset-0 rounded-full bg-fortis-blue"
+              style={{ opacity: dotOpacity }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Spacer for mobile */}
+      <div className="w-16 md:hidden shrink-0" />
+
+      {/* Card Content */}
+      <div
+        className={`md:w-[45%] w-full ${isLeft ? "md:pr-12" : "md:pl-12"} ${
+          isLeft ? "md:ml-0 md:mr-auto" : "md:mr-0 md:ml-auto"
+        }`}
+      >
+        <div
+          onClick={onToggle}
+          className={`bg-background rounded-xl shadow-sm p-6 border cursor-pointer transition-all duration-300 ${
+            isExpanded
+              ? "border-fortis-blue shadow-lg shadow-fortis-blue/10"
+              : "border-transparent hover:border-fortis-blue hover:shadow-lg hover:shadow-fortis-blue/10"
+          }`}
+        >
+          <img
+            src={company.image}
+            alt={company.name}
+            className="w-full h-40 object-cover rounded-lg mb-4"
+            loading="lazy"
+          />
+          <span className="text-xs bg-fortis-blue/10 text-fortis-blue font-medium px-3 py-1 rounded-full inline-block mb-2">
+            {company.tag}
+          </span>
+          <h3 className="text-xl font-bold text-fortis-dark mb-1">{company.name}</h3>
+          <p className="text-fortis-muted text-xs mb-3">Founded {company.year}</p>
+          <p className="text-fortis-muted text-sm leading-relaxed">{company.short}</p>
+
+          <button className="text-fortis-blue text-xs font-semibold mt-3">
+            {isExpanded ? "− Show Less" : "+ Show More"}
+          </button>
+
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <p className="text-foreground text-sm leading-relaxed mt-3 pt-3 border-t border-fortis-border">
+                  {company.full}
+                </p>
+                <a
+                  href="#"
+                  className="text-fortis-blue text-sm font-semibold hover:underline mt-4 inline-block"
+                >
+                  Discover Now →
+                </a>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
