@@ -65,7 +65,7 @@ const StatsCounter = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
-          className="grid grid-cols-2 md:grid-cols-4"
+          className="grid grid-cols-1 md:grid-cols-4"
         >
           {stats.map((stat, i) => (
             <motion.div key={stat.label} variants={fadeUp} custom={i} transition={{ delay: i * 0.1 }}>
