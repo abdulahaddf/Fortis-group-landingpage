@@ -7,12 +7,21 @@ const brands = [
   { src: "/assets/brand_hnm.png", alt: "H&M" },
 ];
 
+import { motion } from "framer-motion";
+import { fadeUp } from "@/lib/animations";
+
 const BrandsMarquee = () => {
   const row = brands.concat(brands);
 
   return (
     <section className="bg-background py-20 px-6 md:px-20">
-      <div className="max-w-7xl mx-auto">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.2 }}
+        variants={fadeUp}
+        className="max-w-7xl mx-auto"
+      >
         <span className="text-fortis-blue text-sm uppercase tracking-[0.25em] font-semibold text-center block">
           our customers
         </span>
@@ -54,7 +63,7 @@ const BrandsMarquee = () => {
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

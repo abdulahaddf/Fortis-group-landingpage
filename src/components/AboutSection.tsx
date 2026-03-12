@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { fadeUp } from "@/lib/animations";
 
 const fadeUpDelayed = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const, delay: 0.2 } }
 };
 
@@ -20,7 +20,7 @@ const AboutSection = () => {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: false, amount: 0.2 }}
           variants={fadeUp}
         >
           <span className="text-fortis-blue text-sm uppercase tracking-[0.25em] font-semibold mb-3 block">
@@ -45,7 +45,7 @@ const AboutSection = () => {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: false, amount: 0.2 }}
           variants={fadeUpDelayed}
         >
           <span className="text-sm uppercase tracking-widest text-fortis-muted mb-8 block">

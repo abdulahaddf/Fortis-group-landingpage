@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { staggerContainer, scaleIn } from "@/lib/animations";
+import { staggerContainer, scaleIn, fadeUp } from "@/lib/animations";
 
 const products = [
   { name: "Fleece & Sherpa", image: "/assets/flees_sherpa_thumb.jpg" },
@@ -19,7 +19,13 @@ const products = [
 const ProductsGrid = () => {
   return (
     <section className="bg-background py-24 px-6 md:px-20">
-      <div className="max-w-7xl mx-auto">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.1 }}
+        variants={fadeUp}
+        className="max-w-7xl mx-auto"
+      >
         <span className="text-fortis-blue text-sm uppercase tracking-[0.25em] font-semibold">
           what we do?
         </span>
@@ -32,9 +38,6 @@ const ProductsGrid = () => {
         </p>
 
         <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
           variants={staggerContainer}
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         >
@@ -62,7 +65,7 @@ const ProductsGrid = () => {
             </motion.div>
           ))}
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 };

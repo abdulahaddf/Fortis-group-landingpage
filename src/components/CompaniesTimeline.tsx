@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useSpring, useTransform } from "framer-motion";
-import { slideLeft, slideRight } from "@/lib/animations";
+import { slideLeft, slideRight, fadeUp } from "@/lib/animations";
 
 const companies = [
   {
@@ -97,16 +97,23 @@ const CompaniesTimeline = () => {
   return (
     <section className="bg-fortis-light py-24 px-6 md:px-20 overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <span className="text-fortis-blue text-sm uppercase tracking-[0.25em] font-semibold">
-          how we do things?
-        </span>
-        <h2 className="text-4xl md:text-5xl font-bold text-fortis-dark mt-2 mb-4">
-          About our companies
-        </h2>
-        <p className="text-fortis-muted max-w-2xl text-base mb-16">
-          Fortis Group operates across garments, hospitality, real estate and agriculture — a
-          diversified conglomerate built on trust.
-        </p>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.1 }}
+          variants={fadeUp}
+        >
+          <span className="text-fortis-blue text-sm uppercase tracking-[0.25em] font-semibold">
+            how we do things?
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold text-fortis-dark mt-2 mb-4">
+            About our companies
+          </h2>
+          <p className="text-fortis-muted max-w-2xl text-base mb-16">
+            Fortis Group operates across garments, hospitality, real estate and agriculture — a
+            diversified conglomerate built on trust.
+          </p>
+        </motion.div>
 
         <div ref={containerRef} className="relative">
           {/* Timeline Spine (Background) */}

@@ -64,7 +64,7 @@ const StatsCounter = () => {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: false, amount: 0.2 }}
           className="grid grid-cols-1 md:grid-cols-4"
         >
           {stats.map((stat, i) => (
